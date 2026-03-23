@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Admin Panel | Animarket</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+        background: #f5f5f5;
+      }
+
+      h1 {
+        text-align: center;
+        color: #ee4d2d;
+      }
+
+      .btn {
+        background: #ee4d2d;
+        color: white;
+        padding: 8px 14px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-bottom: 20px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+      }
+
+      th,
+      td {
+        padding: 10px;
+        border: 1px solid #ccc;
+        text-align: center;
+      }
+
+      .action-btn {
+        background: #555;
+        color: white;
+        padding: 5px 10px;
+        border: none;
+        margin: 0 3px;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+
+      .action-btn.delete {
+        background: #c0392b;
+      }
+
+      .form-popup {
+        display: none;
+        background: white;
+        border: 1px solid #ccc;
+        padding: 20px;
+        max-width: 400px;
+        margin: auto;
+        margin-bottom: 20px;
+        border-radius: 10px;
+      }
+
+      .form-popup input {
+        width: 100%;
+        padding: 8px;
+        margin: 6px 0;
+      }
+
+      .logout {
+        float: right;
+        background: #999;
+        margin-top: -50px;
+      }
+
+      .modal-konfirmasi {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+      }
+
+      .konfirmasi-box {
+        background: white;
+        padding: 20px 30px;
+        border-radius: 10px;
+        text-align: center;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      }
+
+      .toast-notif {
+        visibility: hidden;
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        background-color: #ee4d2d;
+        color: white;
+        padding: 14px 22px;
+        border-radius: 6px;
+        font-size: 14px;
+        z-index: 1001;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        animation: fadeinout 3s ease-in-out;
+      }
+
+      @keyframes fadeinout {
+        0% {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        10% {
+          opacity: 1;
+          transform: translateY(0);
+        }
+        90% {
+          opacity: 1;
+        }
+        100% {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <script>
+      if (localStorage.getItem("admin_akses") !== "true") {
+        alert("Akses ditolak! Masukkan kode admin dulu.");
+        window.location.href = "admin-login.html";
+      }
+    </script>
+
+    <h1>Panel Admin</h1>
+    <button class="btn logout" onclick="logout()">Logout</button>
+    <button class="btn" onclick="toggleForm()">+ Tambah Produk</button>
+
+    <div class="form-popup" id="formProduk">
+      <input type="text" id="nama" placeholder="Nama Produk" />
+      <input type="number" id="harga" placeholder="Harga Produk" />
+      <input type="text" id="gambar" placeholder="Link Gambar (img/...)" />
+      <input type="text" id="kategori" placeholder="Kategori" />
+      <button class="btn" onclick="simpanProduk()">Simpan</button>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Nama</th>
+          <th>Harga</th>
+          <th>Gambar</th>
+          <th>Kategori</th>
+          <th>Aksi</th>
+        </tr>
+      </thead>
+      <tbody id="tabelProduk"></tbody>
+    </table>
+
+    <!-- Modal Konfirmasi -->
+    <div id="konfirmasiHapus" class="modal-konfirmasi">
+      <div class="konfirmasi-box">
+        <p>Apakah kamu yakin ingin menghapus produk ini?</p>
+        <div>
+          <button class="btn" onclick="konfirmasiYa()">Ya</button>
+          <button class="btn" style="background: #999" onclick="tutupKonfirmasi()">Batal</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast Notifikasi -->
+    <div id="toast" class="toast-notif">Notifikasi</div>
+
+    <script>
+      let daftarProduk = JSON.parse(localStorage.getItem("produk")) || [];
+      let indexEdit = -1;
+      let indexHapus = null;
+
+      function renderProduk() {
+        const tbody = document.getElementById("tabelProduk");
+        tbody.innerHTML = "";
+        daftarProduk.forEach((p, i) => {
+          tbody.innerHTML += `
+        <tr>
+          <td>${p.nama}</td>
+          <td>Rp ${p.harga.toLocaleString("id-ID")}</td>
+          <td><img src="${p.gambar}" alt="${p.nama}" width="60"></td>
+          <td>${p.kategori}</td>
+          <td>
+            <button class="action-btn" onclick="editProduk(${i})">Edit</button>
+            <button class="action-btn delete" onclick="hapusProduk(${i})">Hapus</button>
+          </td>
+        </tr>
+      `;
+        });
+      }
+
+      function toggleForm() {
+        const form = document.getElementById("formProduk");
+        form.style.display = form.style.display === "block" ? "none" : "block";
+      }
+
+      function simpanProduk() {
+        const nama = document.getElementById("nama").value.trim();
+        const harga = parseInt(document.getElementById("harga").value);
+        const gambar = document.getElementById("gambar").value.trim();
+        const kategori = document.getElementById("kategori").value.trim();
+
+        if (!nama || !harga || !gambar || !kategori) {
+          tampilkanToast("⚠️ Isi semua data!");
+          return;
+        }
+
+        if (indexEdit >= 0) {
+          daftarProduk[indexEdit] = { nama, harga, gambar, kategori };
+          indexEdit = -1;
+        } else {
+          daftarProduk.push({ nama, harga, gambar, kategori });
+        }
+
+        localStorage.setItem("produk", JSON.stringify(daftarProduk));
+        renderProduk();
+        toggleForm();
+        document.getElementById("formProduk").reset();
+        tampilkanToast("✅ Produk berhasil disimpan!");
+      }
+
+      function hapusProduk(index) {
+        indexHapus = index;
+        document.getElementById("konfirmasiHapus").style.display = "flex";
+      }
+
+      function konfirmasiYa() {
+        if (indexHapus !== null) {
+          const nama = daftarProduk[indexHapus].nama;
+          daftarProduk.splice(indexHapus, 1);
+          localStorage.setItem("produk", JSON.stringify(daftarProduk));
+          renderProduk();
+          tampilkanToast(`🗑️ "${nama}" berhasil dihapus.`);
+          indexHapus = null;
+          tutupKonfirmasi();
+        }
+      }
+
+      function tutupKonfirmasi() {
+        document.getElementById("konfirmasiHapus").style.display = "none";
+      }
+
+      function tampilkanToast(pesan) {
+        const toast = document.getElementById("toast");
+        toast.textContent = pesan;
+        toast.style.visibility = "visible";
+        toast.style.animation = "none";
+        void toast.offsetWidth;
+        toast.style.animation = "fadeinout 3s ease-in-out";
+      }
+
+      function editProduk(index) {
+        const p = daftarProduk[index];
+        document.getElementById("nama").value = p.nama;
+        document.getElementById("harga").value = p.harga;
+        document.getElementById("gambar").value = p.gambar;
+        document.getElementById("kategori").value = p.kategori;
+        indexEdit = index;
+        toggleForm();
+      }
+
+      function logout() {
+        localStorage.removeItem("admin_akses");
+        tampilkanToast("👋 Logout berhasil. Mengalihkan...");
+        setTimeout(() => {
+          window.location.href = "admin-login.html";
+        }, 2000);
+      }
+
+      renderProduk();
+    </script>
+  </body>
+</html>

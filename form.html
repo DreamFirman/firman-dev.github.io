@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Form Biodata | Animarket</title>
+  <style>
+    :root {
+      --primary: #2d87ee;
+      --bg-light: #fefefe;
+      --text-dark: #222;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      background: linear-gradient(to bottom right, #eaf6ff, #d0e9ff);
+      color: var(--text-dark);
+    }
+
+    header {
+      background: var(--primary);
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 40px auto;
+      background: var(--bg-light);
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      text-align: center;
+      color: var(--primary);
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 16px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+
+    .checkbox-group {
+      margin-bottom: 16px;
+    }
+
+    .checkbox-group label {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    button {
+      background: var(--primary);
+      color: white;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      width: 100%;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background: #2269bd;
+    }
+
+    .output {
+      background: #eef8ff;
+      padding: 20px;
+      border: 1px dashed #2d87ee;
+      border-radius: 10px;
+      margin-top: 30px;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 12px;
+      color: #999;
+      margin-top: 40px;
+      padding-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Form Biodata - Animarket</h1>
+  </header>
+
+  <div class="container">
+    <h2>Isi Biodata Anda</h2>
+    <form method="POST" action="">
+      <input type="text" name="nama" placeholder="Nama Lengkap" required>
+      <input type="number" name="umur" placeholder="Umur" min="1" required>
+      <select name="gender" required>
+        <option value="">Pilih Jenis Kelamin</option>
+        <option value="Laki-laki">Laki-laki</option>
+        <option value="Perempuan">Perempuan</option>
+      </select>
+
+      <div class="checkbox-group">
+        <label><strong>Hobi:</strong></label>
+        <label><input type="checkbox" name="hobi[]" value="Membaca"> Membaca</label>
+        <label><input type="checkbox" name="hobi[]" value="Menulis"> Menulis</label>
+        <label><input type="checkbox" name="hobi[]" value="Olahraga"> Olahraga</label>
+        <label><input type="checkbox" name="hobi[]" value="Memasak"> Memasak</label>
+      </div>
+
+      <button type="submit" name="submit">Kirim</button>
+    </form>
+
+    <?php
+    if (isset($_POST['submit'])) {
+      $nama = htmlspecialchars($_POST['nama']);
+      $umur = htmlspecialchars($_POST['umur']);
+      $gender = htmlspecialchars($_POST['gender']);
+      $hobi = isset($_POST['hobi']) ? $_POST['hobi'] : [];
+
+      echo "<div class='output'>
+              <h3>📄 Data Anda</h3>
+              <p><strong>Nama:</strong> $nama</p>
+              <p><strong>Umur:</strong> $umur tahun</p>
+              <p><strong>Jenis Kelamin:</strong> $gender</p>
+              <p><strong>Hobi:</strong> " . (!empty($hobi) ? implode(", ", array_map('htmlspecialchars', $hobi)) : "Tidak ada") . "</p>
+            </div>";
+    }
+    ?>
+  </div>
+
+  <footer>
+    &copy; 2025 Animarket | Tugas UAS Pemrograman Web 1
+  </footer>
+</body>
+</html>

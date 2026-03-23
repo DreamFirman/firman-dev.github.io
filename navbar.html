@@ -1,0 +1,197 @@
+<!-- FILE 1: navbar.html -->
+<style>
+  :root {
+    --primary: #ee4d2d;
+    --light-bg: #fff;
+    --dark-bg: #121212;
+    --light-nav: #ff7762;
+    --dark-nav: #2c2c2c;
+    --light-text: #fff;
+    --dark-text: #eee;
+  }
+
+  * {
+    transition: all 0.3s ease-in-out;
+  }
+
+  header {
+    background: var(--primary);
+    padding: 10px 20px;
+    color: var(--light-text);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  nav {
+    background: var(--light-nav);
+    padding: 8px 20px;
+    display: flex;
+    align-items: center;
+  }
+
+  nav a,
+  nav .dropdown {
+    color: white;
+    text-decoration: none;
+    margin-left: 20px;
+    font-weight: bold;
+  }
+
+  nav a:hover {
+    color: #ffe6e0;
+  }
+
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: white;
+    min-width: 160px;
+    top: 100%;
+    left: 0;
+    z-index: 1;
+    border-radius: 6px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  .dropdown:hover .dropdown-content {
+    display: block;
+  }
+
+  .dropdown-content a {
+    color: var(--primary);
+    padding: 10px 16px;
+    display: block;
+    text-decoration: none;
+  }
+
+  .dropdown-content a:hover {
+    background-color: #f0f0f0;
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .clock {
+    font-weight: bold;
+    font-size: 14px;
+  }
+
+  .theme-toggle {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+  }
+
+  /* DARK MODE */
+  body.dark {
+    background-color: var(--dark-bg);
+    color: var(--dark-text);
+  }
+
+  body.dark header {
+    background: #333;
+  }
+
+  body.dark nav {
+    background: var(--dark-nav);
+  }
+
+  body.dark nav a,
+  body.dark .theme-toggle {
+    color: var(--dark-text);
+  }
+
+  body.dark .dropdown-content {
+    background: #2c2c2c;
+  }
+
+  body.dark .dropdown-content a {
+    color: var(--primary);
+  }
+
+  body.dark .dropdown-content a:hover {
+    background-color: #3a3a3a;
+  }
+</style>
+
+<header>
+  <div class="logo">🐾 Animarket</div>
+  <div class="header-right">
+    <div class="clock" id="clock">00:00:00</div>
+    <button class="theme-toggle">🌓</button>
+  </div>
+</header>
+
+<nav>
+  <a href="dashboard.html">Beranda</a>
+  <div class="dropdown">
+    <a href="produk.html">Produk</a>
+    <div class="dropdown-content">
+      <a href="produk.html?kategori=Pet Shop">Pet Shop</a>
+      <a href="produk.html?kategori=Perikanan">Perikanan</a>
+      <a href="produk.html?kategori=Peternakan">Peternakan</a>
+      <a href="produk.html?kategori=Burung">Burung</a>
+    </div>
+  </div>
+  <a href="cart.html">Keranjang</a>
+  <a href="profil.html">Profil</a>
+  <a href="admin-login.html">Admin</a>
+
+  <a href="#" onclick="logout()">Logout</a>
+</nav>
+
+<script>
+  function updateClock() {
+    const now = new Date();
+    const h = String(now.getHours()).padStart(2, "0");
+    const m = String(now.getMinutes()).padStart(2, "0");
+    const s = String(now.getSeconds()).padStart(2, "0");
+    const clock = document.getElementById("clock");
+    if (clock) clock.textContent = `${h}:${m}:${s}`;
+  }
+
+  function toggleTheme() {
+    document.body.classList.toggle("dark");
+    localStorage.setItem("theme", document.body.classList.contains("dark") ? "dark" : "light");
+  }
+
+  function logout() {
+    alert("Kamu telah logout.");
+    window.location.href = "login.html";
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    if (localStorage.getItem("theme") === "dark") document.body.classList.add("dark");
+
+    fetch("navbar.html")
+      .then((res) => res.text())
+      .then((html) => {
+        document.getElementById("navbar-placeholder").innerHTML = html;
+
+        const toggleBtn = document.querySelector(".theme-toggle");
+        if (toggleBtn) {
+          toggleBtn.addEventListener("click", () => {
+            document.body.classList.toggle("dark");
+            localStorage.setItem("theme", document.body.classList.contains("dark") ? "dark" : "light");
+          });
+        }
+
+        // ⏰ Setelah navbar dimuat, baru jalankan jamnya
+        updateClock();
+        setInterval(updateClock, 1000);
+      });
+
+    filterProduk();
+  });
+</script>
+
+<!-- PENTING: Pastikan halaman lain seperti dashboard.html, produk.html, cart.html -->
+<!-- menyertakan div berikut di dalam <body> -->
+<!-- <div id="navbar-placeholder"></div> -->
+<!-- dan muat dengan fetch("navbar.html") -->

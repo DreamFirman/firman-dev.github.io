@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Register | Animarket</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: "Segoe UI", sans-serif;
+        background: url("img/bg-log.jpg") no-repeat center center fixed;
+        background-size: cover;
+        color: #222;
+      }
+
+      .form-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      .register-box {
+        background: #fff;
+        padding: 30px 40px;
+        border-radius: 12px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        width: 100%;
+        max-width: 400px;
+        animation: fadeIn 0.5s ease-in-out;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      h2 {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      .input-group {
+        margin-bottom: 18px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 6px;
+        font-weight: 600;
+      }
+
+      input {
+        width: 100%;
+        padding: 10px;
+        border: 2px solid #ccc;
+        border-radius: 6px;
+        transition: border 0.3s;
+      }
+
+      input:focus {
+        border-color: #ee4d2d;
+        outline: none;
+      }
+
+      .password-field {
+        position: relative;
+      }
+
+      .toggle-btn {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+      }
+
+      .strength-meter {
+        height: 5px;
+        border-radius: 4px;
+        margin-top: 5px;
+        background: #ccc;
+      }
+
+      .strength-weak {
+        background: red;
+        width: 33%;
+      }
+      .strength-medium {
+        background: orange;
+        width: 66%;
+      }
+      .strength-strong {
+        background: green;
+        width: 100%;
+      }
+
+      .error-msg {
+        font-size: 12px;
+        color: red;
+        margin-top: 4px;
+      }
+
+      .success-msg {
+        font-size: 14px;
+        color: green;
+        margin-top: 10px;
+        text-align: center;
+      }
+
+      button[type="submit"] {
+        width: 100%;
+        background: #ee4d2d;
+        color: #fff;
+        border: none;
+        padding: 12px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 16px;
+      }
+
+      button[type="submit"]:hover {
+        background: #d74325;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="form-wrapper">
+      <div class="register-box">
+        <h2>Daftar Akun</h2>
+        <form id="registerForm">
+          <div class="input-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" required />
+            <div id="usernameError" class="error-msg"></div>
+          </div>
+
+          <div class="input-group password-field">
+            <label for="password">Password</label>
+            <input type="password" id="password" required />
+            <button type="button" class="toggle-btn" onclick="togglePassword()">👁️</button>
+            <div id="strengthBar" class="strength-meter"></div>
+          </div>
+
+          <div class="input-group">
+            <label for="confirm">Konfirmasi Password</label>
+            <input type="password" id="confirm" required />
+            <div id="confirmError" class="error-msg"></div>
+          </div>
+
+          <button type="submit">Daftar</button>
+          <div id="successMsg" class="success-msg"></div>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      const username = document.getElementById("username");
+      const password = document.getElementById("password");
+      const confirm = document.getElementById("confirm");
+      const usernameError = document.getElementById("usernameError");
+      const confirmError = document.getElementById("confirmError");
+      const strengthBar = document.getElementById("strengthBar");
+      const successMsg = document.getElementById("successMsg");
+
+      function togglePassword() {
+        const type = password.type === "password" ? "text" : "password";
+        password.type = type;
+        confirm.type = type;
+      }
+
+      password.addEventListener("input", () => {
+        const val = password.value;
+        strengthBar.className = "strength-meter";
+        if (val.length < 6) strengthBar.classList.add("strength-weak");
+        else if (val.length < 10) strengthBar.classList.add("strength-medium");
+        else strengthBar.classList.add("strength-strong");
+      });
+
+      document.getElementById("registerForm").addEventListener("submit", function (e) {
+        e.preventDefault();
+        let valid = true;
+        usernameError.textContent = "";
+        confirmError.textContent = "";
+        successMsg.textContent = "";
+
+        if (username.value.length < 4) {
+          usernameError.textContent = "Username minimal 4 karakter";
+          valid = false;
+        }
+
+        if (password.value !== confirm.value) {
+          confirmError.textContent = "Konfirmasi password tidak cocok";
+          valid = false;
+        }
+
+        if (valid) {
+          successMsg.textContent = "🎉 Pendaftaran berhasil! Mengarahkan ke login...";
+          setTimeout(() => {
+            window.location.href = "login.html";
+          }, 1500); // tunggu 1.5 detik sebelum pindah
+        }
+      });
+    </script>
+  </body>
+</html>

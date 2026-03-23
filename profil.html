@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Profil Saya | Animarket</title>
+    <style>
+      :root {
+        --primary: #ee4d2d;
+        --bg-light: #fff;
+        --bg-dark: #121212;
+        --text-light: #fff;
+        --text-dark: #222;
+      }
+
+      * {
+        box-sizing: border-box;
+        transition: all 0.3s ease-in-out;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Segoe UI", sans-serif;
+        background: url("img/background.png") no-repeat center center fixed;
+        background-size: cover;
+        color: var(--text-dark);
+      }
+
+      .profile-container {
+        max-width: 500px;
+        margin: 80px auto;
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 12px;
+        padding: 30px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        animation: fadeUp 0.6s ease-in-out;
+      }
+
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      h2 {
+        text-align: center;
+        color: var(--primary);
+      }
+
+      .profile-info {
+        margin-top: 20px;
+      }
+
+      .profile-info label {
+        font-weight: bold;
+        display: block;
+        margin-top: 15px;
+      }
+
+      .profile-info input {
+        width: 100%;
+        padding: 10px;
+        margin-top: 5px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        background: #f9f9f9;
+      }
+
+      .profile-info input[disabled] {
+        background: #eee;
+        cursor: not-allowed;
+      }
+
+      .btn {
+        display: block;
+        width: 100%;
+        margin-top: 25px;
+        padding: 12px;
+        background: var(--primary);
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        font-weight: bold;
+        cursor: pointer;
+      }
+
+      .btn:hover {
+        background: #d74325;
+      }
+
+      .back-link {
+        margin-top: 15px;
+        text-align: center;
+      }
+
+      .back-link a {
+        color: var(--primary);
+        text-decoration: none;
+        font-weight: bold;
+      }
+
+      .toast {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: var(--primary);
+        color: white;
+        padding: 12px 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        opacity: 0;
+        transform: translateY(-20px);
+        animation: slideIn 0.4s forwards;
+        z-index: 9999;
+        font-weight: bold;
+      }
+
+      @keyframes slideIn {
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Dark Mode */
+      body.dark {
+        background: #121212;
+        color: #eee;
+      }
+
+      body.dark .profile-container {
+        background: #2c2c2c;
+      }
+
+      body.dark .profile-info input {
+        background: #444;
+        color: #fff;
+        border: 1px solid #666;
+      }
+
+      body.dark .profile-info input[disabled] {
+        background: #333;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="profile-container">
+      <h2>Profil Saya</h2>
+      <div class="profile-info">
+        <label for="nama">Nama Lengkap</label>
+        <input type="text" id="nama" value="Firman Rahmat" disabled />
+
+        <label for="email">Email</label>
+        <input type="email" id="email" value="firman@example.com" disabled />
+
+        <label for="alamat">Alamat</label>
+        <input type="text" id="alamat" value="Jl. Mawar No. 99, Kediri" disabled />
+
+        <button class="btn" onclick="toggleEdit()">✏️ Edit Profil</button>
+      </div>
+      <div class="back-link">
+        <a href="dashboard.html">← Kembali ke Dashboard</a>
+      </div>
+    </div>
+
+    <script>
+      let isEditing = false;
+
+      function toggleEdit() {
+        const fields = ["nama", "email", "alamat"];
+        fields.forEach((id) => {
+          const input = document.getElementById(id);
+          input.disabled = !isEditing;
+        });
+
+        const btn = document.querySelector(".btn");
+        if (isEditing) {
+          showToast("✅ Profil disimpan!");
+          btn.textContent = "✏️ Edit Profil";
+        } else {
+          btn.textContent = "💾 Simpan Perubahan";
+        }
+
+        isEditing = !isEditing;
+      }
+
+      function showToast(msg) {
+        const toast = document.createElement("div");
+        toast.className = "toast";
+        toast.textContent = msg;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
+      }
+
+      // Dark mode toggle (optional jika ingin aktifkan tema tersimpan)
+      if (localStorage.getItem("theme") === "dark") {
+        document.body.classList.add("dark");
+      }
+    </script>
+  </body>
+</html>

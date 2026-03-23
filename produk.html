@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Produk | Animarket</title>
+    <style>
+      :root {
+        --primary: #ee4d2d;
+        --bg-light: rgba(255, 255, 255, 0.95);
+        --text-dark: #222;
+      }
+
+      * {
+        box-sizing: border-box;
+        transition: all 0.3s ease-in-out;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Segoe UI", sans-serif;
+        background: url("img/background.png") no-repeat center center fixed;
+        background-size: cover;
+        color: var(--text-dark);
+        padding-bottom: 50px;
+      }
+
+      .container {
+        max-width: 1000px;
+        margin: 30px auto;
+        padding: 0 20px;
+        animation: fadeContainer 0.6s ease-in-out;
+      }
+
+      @keyframes fadeContainer {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .search-bar {
+        text-align: center;
+        margin-bottom: 30px;
+        position: relative;
+      }
+
+      .search-bar input,
+      .search-bar select {
+        padding: 10px;
+        margin: 5px;
+        width: 200px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 20px;
+      }
+
+      .product-card {
+        background: var(--bg-light);
+        border-radius: 10px;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+        padding: 15px;
+        text-align: center;
+        opacity: 0;
+        transform: translateY(30px);
+        animation: fadeCard 0.5s forwards;
+      }
+
+      .product-card:nth-child(odd) {
+        animation-delay: 0.1s;
+      }
+      .product-card:nth-child(even) {
+        animation-delay: 0.2s;
+      }
+
+      @keyframes fadeCard {
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .product-card img {
+        width: 100%;
+        max-height: 180px;
+        object-fit: cover;
+        border-radius: 6px;
+        margin-bottom: 10px;
+      }
+
+      .product-name {
+        margin: 10px 0 5px;
+        font-weight: bold;
+      }
+
+      .product-price {
+        color: var(--primary);
+        font-size: 16px;
+        margin-bottom: 10px;
+      }
+
+      .buy-btn {
+        background: var(--primary);
+        color: white;
+        border: none;
+        padding: 8px 14px;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      .toast {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: #ee4d2d;
+        color: white;
+        padding: 12px 20px;
+        border-radius: 6px;
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+        opacity: 0;
+        transform: translateY(20px);
+        animation: slideIn 0.4s forwards;
+        z-index: 9999;
+      }
+
+      @keyframes slideIn {
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        justify-content: center;
+        align-items: center;
+      }
+
+      .modal-content {
+        position: relative;
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        text-align: center;
+        max-width: 300px;
+        width: 100%;
+        animation: fadeInModal 0.3s ease-in-out;
+      }
+
+      @keyframes fadeInModal {
+        from {
+          opacity: 0;
+          transform: scale(0.95);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      .quantity-control {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 10px 0;
+      }
+
+      .close-btn-inside {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: white;
+        border: 2px solid #ccc;
+        color: #444;
+        padding: 5px 10px;
+        border-radius: 8px;
+        font-size: 14px;
+        cursor: pointer;
+      }
+
+      .close-btn-inside:hover {
+        background-color: #f8d7da;
+        color: #c00;
+        border-color: #c00;
+      }
+
+      .quantity-control button {
+        padding: 5px 10px;
+        font-size: 18px;
+        cursor: pointer;
+      }
+
+      .quantity-control input {
+        width: 60px;
+        text-align: center;
+        margin: 0 10px;
+        font-size: 16px;
+      }
+
+      body.dark {
+        background-color: #121212;
+        color: #f1f1f1;
+      }
+
+      body.dark .product-card,
+      body.dark .modal-content {
+        background-color: #2c2c2c;
+        color: #fff;
+      }
+
+      body.dark .buy-btn {
+        background-color: #ff5733;
+      }
+
+      .close-btn {
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        background: transparent;
+        border: none;
+        font-size: 22px;
+        font-weight: bold;
+        cursor: pointer;
+        color: #999;
+      }
+
+      .close-btn:hover {
+        color: var(--primary);
+        transform: scale(1.2);
+      }
+
+      .search-bar select {
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="navbar-placeholder"></div>
+    <div class="container">
+      <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="Cari produk..." onkeyup="filterProduk()" />
+        <select id="kategoriSelect" onchange="filterProduk()">
+          <option value="">Semua Kategori</option>
+          <option value="Pet Shop">Pet Shop</option>
+          <option value="Peternakan">Peternakan</option>
+          <option value="Perikanan">Perikanan</option>
+          <option value="Burung">Burung</option>
+        </select>
+        <span class="clock" id="clock" style="display: block; font-weight: bold; margin-top: 10px"></span>
+      </div>
+      <div class="grid" id="productGrid"></div>
+    </div>
+
+    <div class="modal" id="modalJumlah">
+      <div class="modal-content">
+        <img id="modalImg" src="" alt="" style="width: 100px; border-radius: 10px; margin-bottom: 10px" />
+        <button class="close-btn-inside" onclick="tutupModal()">❌</button>
+        <h3 id="modalNamaProduk" style="margin-bottom: 5px"></h3>
+        <div class="quantity-control">
+          <button onclick="ubahJumlah(-1)">−</button>
+          <input type="number" id="inputJumlah" value="1" min="1" />
+          <button onclick="ubahJumlah(1)">+</button>
+        </div>
+        <button class="buy-btn" onclick="konfirmasiBeli()">🛒 Tambah ke Keranjang</button>
+      </div>
+    </div>
+
+    <script>
+      // Produk awal (default)
+      const produkAwal = [
+        { nama: "Bolt Ikan 1kg", harga: 22000, gambar: "img/bolt-ikan-1kg.jpg", kategori: "Pet Shop" },
+        { nama: "Bolt Donat 1kg", harga: 22000, gambar: "img/bolt-donat-1kg.webp", kategori: "Pet Shop" },
+        { nama: "Felibite Ikan 500g", harga: 12500, gambar: "img/felibite-ikan-500g.jpg", kategori: "Pet Shop" },
+        { nama: "Felibite Donat 500g", harga: 12500, gambar: "img/felibite-donat-500g.jpeg", kategori: "Pet Shop" },
+        { nama: "Cat Choice Adult Salmon 800g", harga: 18000, gambar: "img/cat-choice-adult-salmon-800g.jpg", kategori: "Pet Shop" },
+        { nama: "Cat Choice Kitten Tuna Salmon 1kg", harga: 25000, gambar: "img/cat-choice-kitten-tuna-salmon-1kg.jpeg", kategori: "Pet Shop" },
+        { nama: "Excel Ikan 500g", harga: 12000, gambar: "img/excel-ikan-500g.jpg", kategori: "Pet Shop" },
+        { nama: "Excel Donat 500g", harga: 12000, gambar: "img/excel-donat-500g.png", kategori: "Pet Shop" },
+        { nama: "511-K 1kg", harga: 13500, gambar: "img/511-k-1kg.jpg", kategori: "Peternakan" },
+        { nama: "591-K 1kg", harga: 13500, gambar: "img/591-k-1kg.jpeg", kategori: "Peternakan" },
+        { nama: "592-K 1kg", harga: 13500, gambar: "img/592-k-1kg.jpeg", kategori: "Peternakan" },
+        { nama: "593-K 1kg", harga: 13500, gambar: "img/593-k-1kg.jpg", kategori: "Peternakan" },
+        { nama: "594-K 1kg", harga: 13500, gambar: "img/594-k-1kg.webp", kategori: "Peternakan" },
+        { nama: "511 1kg", harga: 12000, gambar: "img/511-1kg.jpg", kategori: "Peternakan" },
+        { nama: "591 1kg", harga: 12000, gambar: "img/591-1kg.jpeg", kategori: "Peternakan" },
+        { nama: "592 1kg", harga: 12000, gambar: "img/592-1kg.jpg", kategori: "Peternakan" },
+        { nama: "781-1 1kg", harga: 15000, gambar: "img/781-1-1kg.jpg", kategori: "Perikanan" },
+      ];
+
+      // Gabungkan produk admin + default
+      const produkDariAdmin = JSON.parse(localStorage.getItem("produk")) || [];
+      const produkGabungan = [...produkAwal, ...produkDariAdmin];
+      let produkDipilih = null;
+
+      function formatRupiah(angka) {
+        return "Rp " + angka.toLocaleString("id-ID");
+      }
+
+      function tampilkanProduk(data) {
+        const grid = document.getElementById("productGrid");
+        grid.innerHTML = data.length ? "" : "<p style='grid-column: 1 / -1;'>Produk tidak tersedia untuk kategori ini.</p>";
+        data.forEach((p) => {
+          const card = document.createElement("div");
+          card.className = "product-card";
+          card.innerHTML = `
+            <img src="${p.gambar}" alt="${p.nama}" />
+            <div class="product-name">${p.nama}</div>
+            <div class="product-price">${formatRupiah(p.harga)}</div>
+            <button class="buy-btn" onclick="bukaModal('${p.nama}')">Beli</button>
+          `;
+          grid.appendChild(card);
+        });
+      }
+
+      function bukaModal(nama) {
+        produkDipilih = produkGabungan.find((p) => p.nama === nama);
+        document.getElementById("modalNamaProduk").textContent = `Beli ${produkDipilih.nama}`;
+        document.getElementById("modalImg").src = produkDipilih.gambar;
+        document.getElementById("modalImg").alt = produkDipilih.nama;
+        document.getElementById("inputJumlah").value = 1;
+        document.getElementById("modalJumlah").style.display = "flex";
+      }
+
+      function tutupModal() {
+        document.getElementById("modalJumlah").style.display = "none";
+        document.getElementById("productGrid").scrollIntoView({ behavior: "smooth" });
+      }
+
+      function ubahJumlah(delta) {
+        const input = document.getElementById("inputJumlah");
+        let val = parseInt(input.value);
+        val = Math.max(1, val + delta);
+        input.value = val;
+      }
+
+      function konfirmasiBeli() {
+        const jumlah = parseInt(document.getElementById("inputJumlah").value);
+        const cart = JSON.parse(localStorage.getItem("cart")) || [];
+        const found = cart.find((item) => item.nama === produkDipilih.nama);
+        if (found) found.jumlah += jumlah;
+        else cart.push({ ...produkDipilih, jumlah });
+        localStorage.setItem("cart", JSON.stringify(cart));
+
+        document.getElementById("modalJumlah").style.display = "none";
+        const toast = document.createElement("div");
+        toast.className = "toast";
+        toast.textContent = `✅ ${jumlah}x ${produkDipilih.nama} ditambahkan ke keranjang.`;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 4000);
+      }
+
+      function filterProduk() {
+        const keyword = document.getElementById("searchInput").value.toLowerCase();
+        const kategori = document.getElementById("kategoriSelect").value;
+        const hasil = produkGabungan.filter((p) => p.nama.toLowerCase().includes(keyword) && (kategori === "" || p.kategori === kategori));
+        tampilkanProduk(hasil);
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        if (localStorage.getItem("theme") === "dark") document.body.classList.add("dark");
+
+        fetch("navbar.html")
+          .then((res) => res.text())
+          .then((html) => {
+            document.getElementById("navbar-placeholder").innerHTML = html;
+
+            const toggleBtn = document.querySelector(".theme-toggle");
+            if (toggleBtn) {
+              toggleBtn.addEventListener("click", () => {
+                document.body.classList.toggle("dark");
+                localStorage.setItem("theme", document.body.classList.contains("dark") ? "dark" : "light");
+              });
+            }
+
+            function updateClock() {
+              const now = new Date();
+              const h = String(now.getHours()).padStart(2, "0");
+              const m = String(now.getMinutes()).padStart(2, "0");
+              const s = String(now.getSeconds()).padStart(2, "0");
+              const clock = document.getElementById("clock");
+              if (clock) clock.textContent = `${h}:${m}:${s}`;
+            }
+
+            updateClock();
+            setInterval(updateClock, 1000);
+          });
+
+        filterProduk();
+      });
+    </script>
+  </body>
+</html>

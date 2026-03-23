@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Contact Us | Animarket</title>
+  <style>
+    :root {
+      --primary: #ee4d2d;
+      --bg-light: #fefefe;
+      --text-dark: #222;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to bottom right, #fff0e6, #ffe6e6);
+      color: var(--text-dark);
+    }
+
+    header {
+      background: var(--primary);
+      padding: 20px;
+      color: white;
+      text-align: center;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 40px auto;
+      background: var(--bg-light);
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      text-align: center;
+      color: var(--primary);
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 16px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+
+    button {
+      background: var(--primary);
+      color: white;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      width: 100%;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background: #d13b1f;
+    }
+
+    .output {
+      background: #fff8f2;
+      padding: 20px;
+      border: 1px dashed #ee4d2d;
+      border-radius: 10px;
+      margin-top: 30px;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 12px;
+      color: #999;
+      margin-top: 40px;
+      padding-bottom: 20px;
+    }
+
+    .btn-kembali {
+      display: inline-block;
+      text-align: center;
+      margin-top: 20px;
+      padding: 12px 20px;
+      background-color: transparent;
+      border: 2px solid var(--primary);
+      color: var(--primary);
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: bold;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .btn-kembali:hover {
+      background-color: var(--primary);
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Hubungi Kami - Animarket</h1>
+  </header>
+
+  <div class="container">
+    <h2>Form Kontak</h2>
+    <form method="POST" action="">
+      <input type="text" name="nama" placeholder="Nama Anda" required>
+      <input type="text" name="email" placeholder="Email Anda" required>
+      <textarea name="pesan" rows="5" placeholder="Tulis pesan Anda..." required></textarea>
+      <button type="submit" name="submit">Kirim</button>
+    </form>
+
+    <a href="dashboard.html" class="btn-kembali">⬅️ Kembali ke Dashboard</a>
+
+    <?php
+    if (isset($_POST['submit'])) {
+      $nama = htmlspecialchars($_POST['nama']);
+      $email = htmlspecialchars($_POST['email']);
+      $pesan = htmlspecialchars($_POST['pesan']);
+      $waktu = date("Y-m-d H:i:s");
+
+      $data = "$waktu | Nama: $nama | Email: $email | Pesan: $pesan\n";
+      file_put_contents("pesan.txt", $data, FILE_APPEND);
+
+      echo "<div class='output'>
+              <h3>📨 Pesan Terkirim!</h3>
+              <p><strong>Nama:</strong> $nama</p>
+              <p><strong>Email:</strong> $email</p>
+              <p><strong>Pesan:</strong><br>$pesan</p>
+            </div>";
+    }
+
+    if (file_exists("pesan.txt")) {
+      $riwayat = file("pesan.txt", FILE_IGNORE_NEW_LINES);
+      if (count($riwayat) > 0) {
+        echo "<div class='output'>
+                <h3>📄 Riwayat Komentar :</h3>";
+        foreach (array_reverse($riwayat) as $baris) {
+          $baris = str_replace(" | ", "<br>", htmlspecialchars($baris));
+          echo "<p style='border-bottom: 1px solid #ccc; padding-bottom: 8px; margin-bottom: 10px;'>$baris</p>";
+        }
+        echo "</div>";
+      }
+    }
+    ?>
+  </div>
+
+  <footer>
+    &copy; 2025 Animarket - Dibuat untuk UAS Pemrograman Web 1
+  </footer>
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Checkout | Animarket</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: url("img/background.png") no-repeat center center fixed;
+        background-size: cover;
+        color: #333;
+      }
+
+      .container {
+        max-width: 800px;
+        margin: 40px auto;
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 10px;
+        padding: 30px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+      }
+
+      h2 {
+        text-align: center;
+        color: #ee4d2d;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+
+      th,
+      td {
+        padding: 12px;
+        border-bottom: 1px solid #ccc;
+        text-align: left;
+      }
+
+      th {
+        background: #ee4d2d;
+        color: white;
+      }
+
+      .btn {
+        padding: 10px 16px;
+        border: none;
+        border-radius: 5px;
+        font-weight: bold;
+        cursor: pointer;
+        margin-top: 20px;
+      }
+
+      .btn-clear {
+        background: #999;
+        color: white;
+        margin-right: 10px;
+      }
+
+      .btn-back {
+        background: #ee4d2d;
+        color: white;
+      }
+
+      .total {
+        text-align: right;
+        font-size: 18px;
+        font-weight: bold;
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Checkout Keranjang</h2>
+      <table id="cartTable">
+        <thead>
+          <tr>
+            <th>Produk</th>
+            <th>Harga</th>
+          </tr>
+        </thead>
+        <tbody id="cartBody"></tbody>
+      </table>
+      <div class="total" id="totalHarga">Total: Rp 0</div>
+      <button class="btn btn-clear" onclick="kosongkanKeranjang()">Kosongkan</button>
+      <button class="btn btn-back" onclick="window.location.href='produk.html'">Kembali ke Produk</button>
+    </div>
+
+    <script>
+      function formatRupiah(angka) {
+        return "Rp " + angka.toLocaleString("id-ID");
+      }
+
+      function tampilkanKeranjang() {
+        const cart = JSON.parse(localStorage.getItem("keranjang")) || [];
+        const tbody = document.getElementById("cartBody");
+        const totalDiv = document.getElementById("totalHarga");
+        let total = 0;
+
+        tbody.innerHTML = "";
+
+        if (cart.length === 0) {
+          tbody.innerHTML = "<tr><td colspan='2'>Keranjang kosong.</td></tr>";
+          totalDiv.textContent = "Total: Rp 0";
+          return;
+        }
+
+        cart.forEach((item) => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+          <td>${item.nama}</td>
+          <td>${formatRupiah(item.harga)}</td>
+        `;
+          tbody.appendChild(tr);
+          total += item.harga;
+        });
+
+        totalDiv.textContent = "Total: " + formatRupiah(total);
+      }
+
+      function kosongkanKeranjang() {
+        if (confirm("Yakin ingin menghapus semua isi keranjang?")) {
+          localStorage.removeItem("keranjang");
+          tampilkanKeranjang();
+        }
+      }
+
+      tampilkanKeranjang();
+    </script>
+  </body>
+</html>
