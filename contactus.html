@@ -104,48 +104,18 @@
     <h1>Hubungi Kami - Animarket</h1>
   </header>
 
-  <div class="container">
+ <div class="container">
     <h2>Form Kontak</h2>
-    <form method="POST" action="">
+    <!-- GANTI BARIS INI: action sudah diarahkan ke Formspree kamu -->
+    <form action="https://formspree.io/f/mqeyrany" method="POST">
       <input type="text" name="nama" placeholder="Nama Anda" required>
-      <input type="text" name="email" placeholder="Email Anda" required>
+      <input type="email" name="email" placeholder="Email Anda" required>
       <textarea name="pesan" rows="5" placeholder="Tulis pesan Anda..." required></textarea>
-      <button type="submit" name="submit">Kirim</button>
+      <button type="submit">Kirim</button>
     </form>
-
+   
     <a href="index.html" class="btn-kembali">⬅️ Kembali ke Dashboard</a>
 
-    <?php
-    if (isset($_POST['submit'])) {
-      $nama = htmlspecialchars($_POST['nama']);
-      $email = htmlspecialchars($_POST['email']);
-      $pesan = htmlspecialchars($_POST['pesan']);
-      $waktu = date("Y-m-d H:i:s");
-
-      $data = "$waktu | Nama: $nama | Email: $email | Pesan: $pesan\n";
-      file_put_contents("pesan.txt", $data, FILE_APPEND);
-
-      echo "<div class='output'>
-              <h3>📨 Pesan Terkirim!</h3>
-              <p><strong>Nama:</strong> $nama</p>
-              <p><strong>Email:</strong> $email</p>
-              <p><strong>Pesan:</strong><br>$pesan</p>
-            </div>";
-    }
-
-    if (file_exists("pesan.txt")) {
-      $riwayat = file("pesan.txt", FILE_IGNORE_NEW_LINES);
-      if (count($riwayat) > 0) {
-        echo "<div class='output'>
-                <h3>📄 Riwayat Komentar :</h3>";
-        foreach (array_reverse($riwayat) as $baris) {
-          $baris = str_replace(" | ", "<br>", htmlspecialchars($baris));
-          echo "<p style='border-bottom: 1px solid #ccc; padding-bottom: 8px; margin-bottom: 10px;'>$baris</p>";
-        }
-        echo "</div>";
-      }
-    }
-    ?>
   </div>
 
   <footer>
