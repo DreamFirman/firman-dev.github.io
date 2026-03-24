@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <title>Admin Panel | Animarket</title>
+
     <style>
       body {
         font-family: Arial, sans-serif;
@@ -108,40 +109,33 @@
         font-size: 14px;
         z-index: 1001;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-        animation: fadeinout 3s ease-in-out;
       }
 
       @keyframes fadeinout {
-        0% {
-          opacity: 0;
-          transform: translateY(20px);
-        }
-        10% {
-          opacity: 1;
-          transform: translateY(0);
-        }
-        90% {
-          opacity: 1;
-        }
-        100% {
-          opacity: 0;
-          transform: translateY(20px);
-        }
+        0% { opacity: 0; transform: translateY(20px); }
+        10% { opacity: 1; transform: translateY(0); }
+        90% { opacity: 1; }
+        100% { opacity: 0; transform: translateY(20px); }
       }
     </style>
   </head>
+
   <body>
+
+    <!-- 🔒 PROTEKSI ADMIN -->
     <script>
       if (localStorage.getItem("admin_akses") !== "true") {
-        alert("Akses ditolak! Masukkan kode admin dulu.");
-        window.location.href = "admin-login.html";
+        alert("Akses ditolak! Login dulu.");
+        window.location.replace("admin-login.html");
       }
     </script>
 
     <h1>Panel Admin</h1>
+
     <button class="btn logout" onclick="logout()">Logout</button>
     <button class="btn" onclick="toggleForm()">+ Tambah Produk</button>
 
+    <!-- FORM -->
     <div class="form-popup" id="formProduk">
       <input type="text" id="nama" placeholder="Nama Produk" />
       <input type="number" id="harga" placeholder="Harga Produk" />
@@ -150,6 +144,7 @@
       <button class="btn" onclick="simpanProduk()">Simpan</button>
     </div>
 
+    <!-- TABLE -->
     <table>
       <thead>
         <tr>
@@ -163,19 +158,17 @@
       <tbody id="tabelProduk"></tbody>
     </table>
 
-    <!-- Modal Konfirmasi -->
+    <!-- MODAL -->
     <div id="konfirmasiHapus" class="modal-konfirmasi">
       <div class="konfirmasi-box">
-        <p>Apakah kamu yakin ingin menghapus produk ini?</p>
-        <div>
-          <button class="btn" onclick="konfirmasiYa()">Ya</button>
-          <button class="btn" style="background: #999" onclick="tutupKonfirmasi()">Batal</button>
-        </div>
+        <p>Yakin hapus produk?</p>
+        <button class="btn" onclick="konfirmasiYa()">Ya</button>
+        <button class="btn" style="background:#999" onclick="tutupKonfirmasi()">Batal</button>
       </div>
     </div>
 
-    <!-- Toast Notifikasi -->
-    <div id="toast" class="toast-notif">Notifikasi</div>
+    <!-- TOAST -->
+    <div id="toast" class="toast-notif"></div>
 
     <script>
       let daftarProduk = JSON.parse(localStorage.getItem("produk")) || [];
@@ -185,25 +178,27 @@
       function renderProduk() {
         const tbody = document.getElementById("tabelProduk");
         tbody.innerHTML = "";
+
         daftarProduk.forEach((p, i) => {
           tbody.innerHTML += `
-        <tr>
-          <td>${p.nama}</td>
-          <td>Rp ${p.harga.toLocaleString("id-ID")}</td>
-          <td><img src="${p.gambar}" alt="${p.nama}" width="60"></td>
-          <td>${p.kategori}</td>
-          <td>
-            <button class="action-btn" onclick="editProduk(${i})">Edit</button>
-            <button class="action-btn delete" onclick="hapusProduk(${i})">Hapus</button>
-          </td>
-        </tr>
-      `;
+            <tr>
+              <td>${p.nama}</td>
+              <td>Rp ${p.harga.toLocaleString("id-ID")}</td>
+              <td><img src="${p.gambar}" width="60"></td>
+              <td>${p.kategori}</td>
+              <td>
+                <button class="action-btn" onclick="editProduk(${i})">Edit</button>
+                <button class="action-btn delete" onclick="hapusProduk(${i})">Hapus</button>
+              </td>
+            </tr>
+          `;
         });
       }
 
       function toggleForm() {
         const form = document.getElementById("formProduk");
-        form.style.display = form.style.display === "block" ? "none" : "block";
+        form.style.display =
+          form.style.display === "block" ? "none" : "block";
       }
 
       function simpanProduk() {
@@ -227,8 +222,7 @@
         localStorage.setItem("produk", JSON.stringify(daftarProduk));
         renderProduk();
         toggleForm();
-        document.getElementById("formProduk").reset();
-        tampilkanToast("✅ Produk berhasil disimpan!");
+        tampilkanToast("✅ Produk disimpan!");
       }
 
       function hapusProduk(index) {
@@ -237,15 +231,11 @@
       }
 
       function konfirmasiYa() {
-        if (indexHapus !== null) {
-          const nama = daftarProduk[indexHapus].nama;
-          daftarProduk.splice(indexHapus, 1);
-          localStorage.setItem("produk", JSON.stringify(daftarProduk));
-          renderProduk();
-          tampilkanToast(`🗑️ "${nama}" berhasil dihapus.`);
-          indexHapus = null;
-          tutupKonfirmasi();
-        }
+        daftarProduk.splice(indexHapus, 1);
+        localStorage.setItem("produk", JSON.stringify(daftarProduk));
+        renderProduk();
+        tampilkanToast("🗑️ Produk dihapus!");
+        tutupKonfirmasi();
       }
 
       function tutupKonfirmasi() {
@@ -258,7 +248,7 @@
         toast.style.visibility = "visible";
         toast.style.animation = "none";
         void toast.offsetWidth;
-        toast.style.animation = "fadeinout 3s ease-in-out";
+        toast.style.animation = "fadeinout 3s";
       }
 
       function editProduk(index) {
@@ -273,13 +263,14 @@
 
       function logout() {
         localStorage.removeItem("admin_akses");
-        tampilkanToast("👋 Logout berhasil. Mengalihkan...");
+        tampilkanToast("👋 Logout...");
         setTimeout(() => {
           window.location.href = "admin-login.html";
-        }, 2000);
+        }, 1500);
       }
 
       renderProduk();
     </script>
+
   </body>
 </html>
