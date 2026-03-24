@@ -9,7 +9,6 @@
         font-family: "Segoe UI", sans-serif;
         background: url("img/bg-log-min.png") no-repeat center center fixed;
         background-size: cover;
-        background-position: center;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -26,7 +25,6 @@
         max-width: 400px;
         width: 100%;
         backdrop-filter: blur(4px);
-        transition: transform 0.2s ease;
       }
 
       h2 {
@@ -34,14 +32,12 @@
         color: #ee4d2d;
       }
 
-      input[type="password"] {
+      input {
         width: 100%;
         padding: 12px;
         margin-bottom: 20px;
         border: 1px solid #ccc;
         border-radius: 8px;
-        font-size: 16px;
-        outline: none;
       }
 
       button {
@@ -50,20 +46,12 @@
         border: none;
         padding: 10px 20px;
         border-radius: 8px;
-        font-size: 16px;
         cursor: pointer;
-        transition: background-color 0.3s ease;
-      }
-
-      button:hover {
-        background-color: #c93d24;
       }
 
       .error {
         color: red;
-        margin-bottom: 15px;
-        font-size: 14px;
-        min-height: 20px;
+        margin-bottom: 10px;
       }
 
       .shake {
@@ -71,43 +59,26 @@
       }
 
       @keyframes shake {
-        0% {
-          transform: translateX(0);
-        }
-        25% {
-          transform: translateX(-5px);
-        }
-        50% {
-          transform: translateX(5px);
-        }
-        75% {
-          transform: translateX(-5px);
-        }
-        100% {
-          transform: translateX(0);
-        }
+        25% { transform: translateX(-5px); }
+        50% { transform: translateX(5px); }
+        75% { transform: translateX(-5px); }
       }
 
       .back-btn {
         position: absolute;
         top: 20px;
         left: 20px;
-        background: rgba(119, 119, 119, 0.9);
+        background: rgba(119,119,119,0.9);
         color: white;
-        padding: 10px 16px;
+        padding: 10px;
         border-radius: 8px;
         text-decoration: none;
-        font-size: 14px;
-        transition: background 0.3s ease;
-      }
-
-      .back-btn:hover {
-        background: #555;
       }
     </style>
   </head>
+
   <body>
-    <a href="index.html" class="back-btn">🔙 Kembali ke Dashboard</a>
+    <a href="index.html" class="back-btn">🔙 Kembali</a>
 
     <div class="login-box" id="loginBox">
       <h2>Masuk Admin</h2>
@@ -117,28 +88,28 @@
     </div>
 
     <script>
+      // Kalau sudah login, langsung masuk panel
+      if (localStorage.getItem("admin_akses") === "true") {
+        window.location.href = "admin-panel.html";
+      }
+
       function verifikasiAdmin() {
         const kode = document.getElementById("kodeAkses").value.trim();
         const errorDiv = document.getElementById("errorMsg");
-        const loginBox = document.getElementById("loginBox");
+        const box = document.getElementById("loginBox");
 
         if (kode === "admin123") {
           localStorage.setItem("admin_akses", "true");
           window.location.href = "admin-panel.html";
         } else {
           errorDiv.textContent = "❌ Kode akses salah!";
-          loginBox.classList.add("shake");
-          setTimeout(() => {
-            loginBox.classList.remove("shake");
-          }, 300);
+          box.classList.add("shake");
+          setTimeout(() => box.classList.remove("shake"), 300);
         }
       }
 
-      // Tekan Enter langsung masuk
       document.addEventListener("keydown", function (e) {
-        if (e.key === "Enter") {
-          verifikasiAdmin();
-        }
+        if (e.key === "Enter") verifikasiAdmin();
       });
     </script>
   </body>
