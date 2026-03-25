@@ -1,167 +1,66 @@
 <!DOCTYPE html>
 <html lang="id">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Login | Animarket</title>
-    <style>
-      * {
-        box-sizing: border-box;
-        font-family: "Segoe UI", sans-serif;
-      }
+<head>
+<meta charset="UTF-8">
+<title>Login Admin</title>
 
-      body {
-        margin: 0;
-        padding: 0;
-        height: 100vh;
-        background: url("img/bg-log.jpg") no-repeat center center fixed;
-        background-size: cover;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      }
+<style>
+body {
+  margin: 0;
+  font-family: Arial;
+  background: url("img/bg-log-min.png") center/cover no-repeat;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
 
-      .login-container {
-        width: 100%;
-        max-width: 380px;
-        padding: 30px;
-        background: rgba(255, 255, 255, 0.95);
-        border-radius: 10px;
-        box-shadow: 0 0 16px rgba(0, 0, 0, 0.2);
-        text-align: center;
-        animation: fadeIn 0.4s ease-in-out;
-      }
+.login-box {
+  background: rgba(255,255,255,0.95);
+  padding: 40px;
+  border-radius: 10px;
+  text-align: center;
+}
 
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-          transform: translateY(-10px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
+input {
+  padding: 10px;
+  width: 100%;
+  margin: 10px 0;
+}
 
-      .login-container img.logo {
-        width: 220px;
-        margin-bottom: 15px;
-      }
+button {
+  background: #ee4d2d;
+  color: white;
+  border: none;
+  padding: 10px;
+}
+</style>
+</head>
 
-      .login-container h2 {
-        color: #ee4d2d;
-        margin-bottom: 20px;
-      }
+<body>
 
-      input[type="email"],
-      input[type="password"] {
-        width: 100%;
-        padding: 10px;
-        margin: 10px 0;
-        border: 1px solid #ccc;
-        border-radius: 6px;
-      }
+<div class="login-box">
+  <h2>Login Admin</h2>
+  <input type="password" id="kode" placeholder="Kode admin">
+  <button onclick="login()">Masuk</button>
+</div>
 
-      button {
-        width: 100%;
-        padding: 12px;
-        background: #ee4d2d;
-        border: none;
-        color: white;
-        font-weight: bold;
-        border-radius: 6px;
-        margin-top: 10px;
-        cursor: pointer;
-        transition: background 0.3s ease;
-      }
+<script>
+if (localStorage.getItem("admin_akses") === "true") {
+  window.location.href = "admin-panel.html";
+}
 
-      button:hover {
-        background: #d74325;
-      }
+function login() {
+  const kode = document.getElementById("kode").value;
 
-      .bottom-link {
-        margin-top: 15px;
-        font-size: 14px;
-      }
+  if (kode === "admin123") {
+    localStorage.setItem("admin_akses", "true");
+    window.location.href = "admin-panel.html";
+  } else {
+    alert("Kode salah!");
+  }
+}
+</script>
 
-      .bottom-link a {
-        color: #ee4d2d;
-        text-decoration: none;
-        font-weight: bold;
-      }
-
-      .bottom-link a:hover {
-        text-decoration: underline;
-      }
-
-      .toast {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background-color: #4caf50;
-        color: white;
-        padding: 12px 20px;
-        border-radius: 8px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-        opacity: 0;
-        transform: translateY(-20px);
-        animation: slideFade 0.5s forwards;
-        z-index: 9999;
-        font-weight: bold;
-      }
-
-      @keyframes slideFade {
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <div class="login-container">
-      <img src="img/animarket-logo.png" alt="Logo Animarket" class="logo" />
-      <h2>Masuk ke Animarket</h2>
-      <form onsubmit="return loginUser();">
-        <input id="email" type="email" placeholder="Email" required />
-        <input id="password" type="password" placeholder="Password" required />
-        <button type="submit">Masuk</button>
-      </form>
-      <div class="bottom-link">Belum punya akun? <a href="register.html">Daftar</a></div>
-    </div>
-
-    <script>
-      function loginUser() {
-        const email = document.getElementById("email").value.trim();
-        const password = document.getElementById("password").value.trim();
-
-        const validEmail = "admin@demo.com";
-        const validPassword = "12345";
-
-        if (email === validEmail && password === validPassword) {
-          showToast("✅ Berhasil login! Mengalihkan ke dashboard...", "#4caf50");
-
-          // Pindah ke dashboard setelah 2 detik
-          setTimeout(() => {
-            window.location.href = "index.html";
-          }, 2000);
-        } else {
-          showToast("❌ Email atau password salah!", "#e53935");
-        }
-
-        return false; // Supaya form tidak reload
-      }
-
-      function showToast(message, bgColor) {
-        const toast = document.createElement("div");
-        toast.className = "toast";
-        toast.style.backgroundColor = bgColor;
-        toast.textContent = message;
-        document.body.appendChild(toast);
-
-        setTimeout(() => {
-          toast.remove();
-        }, 3000);
-      }
-    </script>
-  </body>
+</body>
 </html>
