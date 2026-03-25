@@ -27,7 +27,9 @@
       }
 
       @keyframes fadeIn {
-        to { opacity: 1; }
+        to {
+          opacity: 1;
+        }
       }
 
       @keyframes slideUp {
@@ -42,14 +44,36 @@
         padding: 10px 20px;
         color: var(--text-light);
         display: flex;
+        align-items: center;
         justify-content: space-between;
       }
 
-      nav a {
-        color: white;
-        margin-left: 20px;
-        text-decoration: none;
+      .logo {
+        font-size: 20px;
         font-weight: bold;
+      }
+
+      .header-right {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+
+      .clock {
+        font-weight: bold;
+        font-size: 14px;
+      }
+
+      nav a {
+        color: var(--text-light);
+        text-decoration: none;
+        margin-left: 20px;
+        font-weight: bold;
+      }
+
+      nav a:hover {
+        text-decoration: underline;
+        color: #ffdfdf;
       }
 
       .content {
@@ -57,12 +81,14 @@
         transform: translateY(30px);
         animation: slideUp 1s ease forwards;
         animation-delay: 0.5s;
+        animation-fill-mode: forwards;
         padding: 30px;
         text-align: center;
         background: var(--bg-light);
         max-width: 700px;
         margin: 50px auto;
         border-radius: 10px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
       }
 
       .btn-logout {
@@ -70,8 +96,49 @@
         color: var(--primary);
         border: 2px solid var(--primary);
         padding: 10px 20px;
+        font-weight: bold;
         border-radius: 5px;
         cursor: pointer;
+        margin-top: 30px;
+        text-decoration: none;
+      }
+
+      .btn-logout:hover {
+        background: var(--primary);
+        color: #fff;
+      }
+
+      .theme-toggle {
+        background: transparent;
+        border: none;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+      }
+
+      footer {
+        text-align: center;
+        margin-top: 40px;
+        font-size: 12px;
+        color: #888;
+      }
+
+      /* Modal */
+      #logoutModal {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .modal-box {
+        background: #fff;
+        padding: 20px 30px;
+        border-radius: 8px;
+        text-align: center;
       }
 
       /* Toast */
@@ -83,60 +150,56 @@
         color: white;
         padding: 12px 20px;
         border-radius: 8px;
+        z-index: 9999;
       }
     </style>
   </head>
 
   <body>
     <header>
-      <div>🐾 Animarket</div>
-      <div id="clock"></div>
+      <div class="logo">🐾 Animarket</div>
+      <div class="header-right">
+        <div class="clock" id="clock">00:00:00</div>
+        <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+      </div>
     </header>
 
-    <nav style="background:#ff7762; padding:10px">
+    <nav style="background: #ff7762; padding: 8px 20px">
       <a href="index.html">Beranda</a>
       <a href="produk.html">Produk</a>
-      <a href="cart.html">Keranjang</a>
-      <a href="profil.html">Profil</a>
+      <a href="#">Keranjang</a>
+      <a href="#">Profil</a>
       <a href="#" onclick="aksesAdmin()">Admin</a>
-      <a href="#" onclick="confirmLogout()">Logout</a>
     </nav>
 
     <div class="content">
-      <h2>Selamat Datang di Dashboard Animarket 🎉</h2>
-      <p>Halo Meowzers!</p>
+      <h2>Selamat Datang 🎉</h2>
+      <p>Halo Meowzers 😺</p>
     </div>
+
+    <footer>&copy; 2025 Animarket</footer>
 
     <script>
       function updateClock() {
         const now = new Date();
         document.getElementById("clock").textContent =
-          now.toLocaleTimeString();
+          now.toLocaleTimeString("id-ID");
       }
       setInterval(updateClock, 1000);
       updateClock();
 
-      function confirmLogout() {
-        window.location.href = "login.html";
+      function toggleTheme() {
+        document.body.classList.toggle("dark");
       }
 
-      // ✅ FIX DI SINI
+      // 🔥 INI YANG DIPERBAIKI
       function aksesAdmin() {
         const isAdmin = localStorage.getItem("admin_akses");
 
         if (isAdmin === "true") {
           window.location.href = "admin-panel.html";
         } else {
-          // toast + redirect
-          const toast = document.createElement("div");
-          toast.className = "toast-denied";
-          toast.textContent = "🔒 Login admin dulu...";
-          document.body.appendChild(toast);
-
-          setTimeout(() => {
-            toast.remove();
-            window.location.href = "admin-login.html";
-          }, 1500);
+          window.location.href = "admin-login.html";
         }
       }
     </script>
